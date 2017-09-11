@@ -32,7 +32,7 @@ RUN sed 's/md5/trust/g' test.out > test2.out
 RUN mv test2.out /etc/postgresql/9.5/main/pg_hba.conf 
 RUN rm test.out
 
-
+# install ground
 RUN wget https://github.com/ground-context/ground/releases/download/v0.1.2/ground-0.1.2.zip
 RUN unzip ground-0.1.2.zip
 RUN rm ground-0.1.2.zip
@@ -40,24 +40,13 @@ RUN service postgresql start && sudo su -c "createuser ground -d -s" -s /bin/sh 
 RUN service postgresql start && cd ground-0.1.2/db && python2.7 postgres_setup.py ground ground 
 
 # miscellaneous installs
-RUN apt-get install -y python3-pip
-RUN pip3 install pandas
-RUN pip3 install numpy
-RUN pip3 install requests
-
-RUN apt-get install -y python-pip
-RUN pip2 install psycopg2
-RUN pip2 install requests
-RUN pip2 install numpy
-RUN pip2 install pandas
-RUN pip2 install tweet_preprocessor
-RUN pip2 install scipy
+RUN apt-get install -y python3-pip python-pip
+RUN pip3 install pandas numpy requests
+RUN pip2 install psycopg2 requests numpy pandas tweet_preprocessor scipy HTMLParser
 RUN pip2 install -U scikit-learn
-RUN pip2 install HTMLParser
 
 # install git & tmux
-RUN apt-get install -y git 
-RUN apt-get install -y tmux
+RUN apt-get install -y git tmux
 
 RUN git clone https://github.com/ground-context/client
 RUN cd client/python && python setup.py install
@@ -83,3 +72,5 @@ RUN chown -R $NB_USER /home/$NB_USER/ground-0.1.2/db
 RUN chown -R $NB_USER /home/$NB_USER/risecamp/
 
 CMD cd /home/$NB_USER && ./ground_start.sh
+
+ENV NB_GROUND_HOME /home/$NB_USER
